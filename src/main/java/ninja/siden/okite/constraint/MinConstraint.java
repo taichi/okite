@@ -15,6 +15,7 @@
  */
 package ninja.siden.okite.constraint;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 import ninja.siden.okite.ValidationContext;
@@ -26,7 +27,7 @@ import ninja.siden.okite.Violation;
 public class MinConstraint<V extends Number & Comparable<V>> extends
 		DefaultConstraint<V> {
 
-	protected V min;
+	V min;
 
 	public V min() {
 		return this.min;
@@ -39,8 +40,10 @@ public class MinConstraint<V extends Number & Comparable<V>> extends
 
 	@Override
 	public Optional<Violation> validate(V value, ValidationContext context) {
-		return 0 <= this.min.compareTo(value) ? Optional.empty() : Optional
-				.of(context.to(this.messageId));
+		if (value == null || -1 < value.compareTo(this.min)) {
+			return Optional.empty();
+		}
+		return Optional.of(context.to(this.messageId, Arrays.asList(this.min)));
 	}
 
 }

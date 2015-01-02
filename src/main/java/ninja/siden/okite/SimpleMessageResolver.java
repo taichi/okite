@@ -13,14 +13,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package ninja.siden.okite.internal;
+package ninja.siden.okite;
 
-import java.util.Formatter;
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
-
-import ninja.siden.okite.MessageResolver;
 
 /**
  * @author taichi
@@ -43,12 +41,10 @@ public class SimpleMessageResolver implements MessageResolver {
 
 	@Override
 	public String resolve(Locale locale, String messageId, List<?> args) {
-		try (Formatter formatter = new Formatter(locale)) {
-			ResourceBundle bundle = ResourceBundle.getBundle(this.baseName,
-					locale, CONTROL);
-			return formatter.format(bundle.getString(messageId),
-					args.toArray(new Object[args.size()])).toString();
-		}
+		ResourceBundle bundle = ResourceBundle.getBundle(this.baseName, locale,
+				CONTROL);
+		MessageFormat fmt = new MessageFormat(bundle.getString(messageId),
+				locale);
+		return fmt.format(args.toArray());
 	}
-
 }

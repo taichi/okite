@@ -15,27 +15,37 @@
  */
 package ninja.siden.okite;
 
+import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.util.stream.Stream;
 
 /**
  * @author taichi
  */
-public interface Validator<T> {
+@Repeatable(AnnotateWith.List.class)
+@Retention(RetentionPolicy.SOURCE)
+@Target({ ElementType.ANNOTATION_TYPE, ElementType.TYPE })
+public @interface AnnotateWith {
 
-	Stream<Violation> validate(T value);
+	Class<? extends Annotation> value();
 
-	@Retention(RetentionPolicy.SOURCE)
+	AnnotationTarget target() default AnnotationTarget.CONSTRUCTOR;
+
+	String values() default "";
+
+	public enum AnnotationTarget {
+		TYPE,
+
+		CONSTRUCTOR,
+
+		CONSTRUCTOR_PARAMETER;
+	}
+
 	@Target({ ElementType.ANNOTATION_TYPE, ElementType.TYPE })
-	public @interface Validation {
-
-		String prefix() default "";
-
-		String suffix() default "$$Validator";
-
-		boolean cascading() default false;
+	public @interface List {
+		AnnotateWith[] value();
 	}
 }

@@ -37,8 +37,10 @@ public class PatternConstraint<V extends CharSequence> extends
 
 	@Override
 	public Optional<Violation> validate(V t, ValidationContext context) {
-		return pattern.matcher(t).matches() ? Optional.empty() : Optional
-				.of(context.to(this.messageId(),
-						Arrays.asList(pattern.pattern())));
+		if (t == null || pattern.matcher(t).matches()) {
+			return Optional.empty();
+		}
+		return Optional.of(context.to(this.messageId(),
+				Arrays.asList(pattern.pattern())));
 	}
 }

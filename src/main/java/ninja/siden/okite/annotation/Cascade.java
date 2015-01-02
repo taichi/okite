@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 SATO taichi
+ * Copyright 2015 SATO taichi
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,29 +13,17 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package ninja.siden.okite;
+package ninja.siden.okite.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.util.stream.Stream;
 
 /**
  * @author taichi
  */
-public interface Validator<T> {
-
-	Stream<Violation> validate(T value);
-
-	@Retention(RetentionPolicy.SOURCE)
-	@Target({ ElementType.ANNOTATION_TYPE, ElementType.TYPE })
-	public @interface Validation {
-
-		String prefix() default "";
-
-		String suffix() default "$$Validator";
-
-		boolean cascading() default false;
-	}
+@Target({ ElementType.METHOD, ElementType.FIELD })
+@Retention(RetentionPolicy.SOURCE)
+public @interface Cascade {
 }
