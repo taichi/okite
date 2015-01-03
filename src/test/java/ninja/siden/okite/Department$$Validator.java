@@ -20,7 +20,7 @@ public class Department$$Validator extends BaseValidator<Department> {
 			MinConstraint<Integer> c = new MinConstraint<Integer>();
 			c.messageId("okite.min");
 			c.order(100);
-			c.min(0);
+			c.value(0);
 			constraints.add(c);
 		}
 

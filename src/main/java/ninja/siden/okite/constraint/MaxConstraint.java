@@ -24,23 +24,23 @@ import ninja.siden.okite.Violation;
 /**
  * @author taichi
  */
-public class MinConstraint<V extends Number & Comparable<V>> extends
+public class MaxConstraint<V extends Number & Comparable<V>> extends
 		DefaultConstraint<V> {
 
-	V min;
+	V max;
 
 	public V value() {
-		return this.min;
+		return this.max;
 	}
 
-	public MinConstraint<V> value(V value) {
-		this.min = value;
+	public MaxConstraint<V> value(V value) {
+		this.max = value;
 		return this;
 	}
 
 	@Override
 	public Optional<Violation> validate(V value, ValidationContext context) {
-		if (value == null || -1 < value.compareTo(this.min)) {
+		if (value == null || -1 < this.max.compareTo(value)) {
 			return Optional.empty();
 		}
 		return Optional.of(context.to(this.messageId(),

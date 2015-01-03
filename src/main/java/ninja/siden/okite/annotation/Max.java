@@ -21,19 +21,19 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import ninja.siden.okite.Constraint.Implements;
-import ninja.siden.okite.constraint.MinConstraint;
+import ninja.siden.okite.constraint.MaxConstraint;
 
 /**
  * @author taichi
  */
 @Retention(RetentionPolicy.SOURCE)
 @Target({ ElementType.FIELD, ElementType.METHOD })
-@Implements(MinConstraint.class)
-public @interface Min {
+@Implements(MaxConstraint.class)
+public @interface Max {
 
 	long value() default 0L;
 
-	String messageId() default "okite.min";
+	String messageId() default "okite.max";
 
 	int order() default 0;
 }

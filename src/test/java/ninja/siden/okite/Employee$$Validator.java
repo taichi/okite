@@ -25,7 +25,7 @@ public class Employee$$Validator extends BaseValidator<Employee> {
 			MinConstraint<Integer> c = new MinConstraint<Integer>();
 			c.messageId("okite.min");
 			c.order(100);
-			c.min(0);
+			c.value(0);
 			constraints.add(c);
 		}
 

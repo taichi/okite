@@ -15,6 +15,7 @@
  */
 package ninja.siden.okite.constraint;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 import ninja.siden.okite.ValidationContext;
@@ -30,13 +31,32 @@ public class RangeConstraint<V extends Number & Comparable<V>> extends
 
 	V max;
 
-	public RangeConstraint(V min, V max) {
-		this.min = min;
-		this.max = max;
+	public V min() {
+		return this.min;
+	}
+
+	public RangeConstraint<V> min(V value) {
+		this.min = value;
+		return this;
+	}
+
+	public V max() {
+		return this.max;
+	}
+
+	public RangeConstraint<V> max(V value) {
+		this.max = value;
+		return this;
 	}
 
 	@Override
-	public Optional<Violation> validate(V t, ValidationContext context) {
-		return null;
+	public Optional<Violation> validate(V value, ValidationContext context) {
+		if (value == null
+				|| (-1 < value.compareTo(this.min) && -1 < this.max
+						.compareTo(value))) {
+			return Optional.empty();
+		}
+		return Optional.of(context.to(this.messageId(),
+				Arrays.asList(this.min(), this.max())));
 	}
 }
