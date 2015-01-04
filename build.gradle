@@ -3,6 +3,7 @@ apply plugin: 'java'
 repositories {
 	jcenter()
 	mavenCentral()
+	maven {url 'http://maven.seasar.org/maven2'}
 }
 
 sourceCompatibility = targetCompatibility = 1.8
@@ -16,6 +17,7 @@ test {
 dependencies {
 	testCompile 'org.jmockit:jmockit:1.+'
 	testCompile 'junit:junit:4.+'
+	testCompile 'org.seasar.aptina:aptina-unit:1.0.0'
 }
 
 apply plugin: 'eclipse'
