@@ -35,6 +35,11 @@ public @interface Pattern {
 
 	String value();
 
+	/**
+	 * @see java.util.regex.Pattern
+	 */
+	int flags() default 0;
+
 	String messageId() default "okite.pattern";
 
 	int order() default 0;

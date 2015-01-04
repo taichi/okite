@@ -30,9 +30,25 @@ public class PatternConstraint<V extends CharSequence> extends
 
 	Pattern pattern;
 
+	int flags;
+
 	public PatternConstraint<V> pattern(String pattern) {
-		this.pattern = Pattern.compile(pattern);
+		this.pattern = Pattern.compile(pattern, this.flags());
 		return this;
+	}
+
+	public String pattern() {
+		return this.pattern.pattern();
+	}
+
+	public PatternConstraint<V> flags(int value) {
+		this.flags = value;
+		this.pattern = Pattern.compile(this.pattern(), value);
+		return this;
+	}
+
+	public int flags() {
+		return this.flags;
 	}
 
 	@Override
