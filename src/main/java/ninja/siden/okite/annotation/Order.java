@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 SATO taichi
+ * Copyright 2015 SATO taichi
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,9 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package ninja.siden.okite;
+package ninja.siden.okite.annotation;
 
-import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
-import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -25,27 +23,9 @@ import java.lang.annotation.Target;
 /**
  * @author taichi
  */
-@Repeatable(AnnotateWith.List.class)
 @Retention(RetentionPolicy.SOURCE)
-@Target({ ElementType.ANNOTATION_TYPE, ElementType.TYPE })
-public @interface AnnotateWith {
+@Target({ ElementType.METHOD, ElementType.FIELD })
+public @interface Order {
 
-	Class<? extends Annotation> value();
-
-	AnnotationTarget target() default AnnotationTarget.CONSTRUCTOR;
-
-	String values() default "";
-
-	public enum AnnotationTarget {
-		TYPE,
-
-		CONSTRUCTOR,
-
-		CONSTRUCTOR_PARAMETER;
-	}
-
-	@Target({ ElementType.ANNOTATION_TYPE, ElementType.TYPE })
-	public @interface List {
-		AnnotateWith[] value();
-	}
+	int value();
 }

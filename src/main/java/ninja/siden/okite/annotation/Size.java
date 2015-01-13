@@ -16,26 +16,43 @@
 package ninja.siden.okite.annotation;
 
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import ninja.siden.okite.Constraint.Policy;
-import ninja.siden.okite.constraint.MaxConstraint;
 
 /**
+ * The annotated element size must be between the specified boundaries
+ * (included).
+ * <ul>
+ * <li>CharSequence</li>
+ * <li>Collection</li>
+ * <li>Map</li>
+ * <li>Array</li>
+ * </ul>
+ * 
  * @author taichi
  */
+@Repeatable(Size.List.class)
 @Retention(RetentionPolicy.SOURCE)
 @Target({ ElementType.FIELD, ElementType.METHOD })
-@Implements(MaxConstraint.class)
-public @interface Max {
+@Emitter("ninja.siden.okite.compiler.internal.SizeEmitter")
+public @interface Size {
 
-	long value() default 0L;
+	int min() default 0;
 
-	String messageId() default "okite.max";
+	int max() default Integer.MAX_VALUE;
+
+	String messageId() default "okite.size";
 
 	int order() default 0;
 
 	Policy policy() default Policy.ContinueToNextField;
+
+	@Target({ ElementType.FIELD, ElementType.METHOD })
+	public @interface List {
+		Size[] value();
+	}
 }

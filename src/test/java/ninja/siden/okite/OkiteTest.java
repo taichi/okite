@@ -76,4 +76,14 @@ public class OkiteTest {
 		assertEquals("must match [a-z]+", v.toMessage());
 		assertEquals("name", v.target());
 	}
+
+	@Test
+	public void test_dept_id_minus() throws Exception {
+		Employee employee = make();
+		employee.dept.id = -1;
+		Stream<Violation> errors = target.validate(employee);
+		Violation v = errors.findFirst().get();
+		assertEquals("more than 0", v.toMessage());
+		assertEquals("id", v.target()); // TODO to be dept.id
+	}
 }

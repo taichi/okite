@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 SATO taichi
+ * Copyright 2014 - 2015 SATO taichi
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,21 +13,26 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package ninja.siden.okite;
+package ninja.siden.okite.annotation;
 
-import ninja.siden.okite.annotation.Min;
-import ninja.siden.okite.compiler.test.MyConst;
-import ninja.siden.okite.compiler.test.MyValidation;
+import java.lang.annotation.Annotation;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * @author taichi
  */
-@MyValidation
-public class Department {
+@Retention(RetentionPolicy.SOURCE)
+@Target({ ElementType.ANNOTATION_TYPE, ElementType.TYPE })
+public @interface Validation {
 
-	@Min(0)
-	Integer id;
+	// default validations cf. NotNull
+	Class<? extends Annotation>[] value() default {};
 
-	@MyConst
-	Integer name;
+	boolean cascading() default false;
+
+	AnnotateWith[] with() default {};
+
 }

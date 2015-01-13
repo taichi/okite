@@ -16,8 +16,8 @@
 package ninja.siden.okite.constraint;
 
 import java.util.Arrays;
-import java.util.Optional;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import ninja.siden.okite.ValidationContext;
 import ninja.siden.okite.Violation;
@@ -52,11 +52,11 @@ public class PatternConstraint<V extends CharSequence> extends
 	}
 
 	@Override
-	public Optional<Violation> validate(V t, ValidationContext context) {
+	public Stream<Violation> validate(V t, ValidationContext context) {
 		if (t == null || pattern.matcher(t).matches()) {
-			return Optional.empty();
+			return Stream.empty();
 		}
-		return Optional.of(context.to(this.messageId(),
+		return Stream.of(context.to(this.messageId(),
 				Arrays.asList(pattern.pattern())));
 	}
 }

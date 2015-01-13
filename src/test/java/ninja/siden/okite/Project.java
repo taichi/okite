@@ -15,19 +15,13 @@
  */
 package ninja.siden.okite;
 
-import ninja.siden.okite.annotation.Min;
 import ninja.siden.okite.compiler.test.MyConst;
-import ninja.siden.okite.compiler.test.MyValidation;
 
 /**
  * @author taichi
  */
-@MyValidation
-public class Department {
-
-	@Min(0)
-	Integer id;
+public class Project {
 
 	@MyConst
-	Integer name;
+	Integer id;
 }

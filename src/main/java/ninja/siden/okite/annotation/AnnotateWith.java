@@ -13,21 +13,31 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package ninja.siden.okite;
+package ninja.siden.okite.annotation;
 
-import ninja.siden.okite.annotation.Min;
-import ninja.siden.okite.compiler.test.MyConst;
-import ninja.siden.okite.compiler.test.MyValidation;
+import java.lang.annotation.Annotation;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * @author taichi
  */
-@MyValidation
-public class Department {
+@Retention(RetentionPolicy.SOURCE)
+@Target({})
+public @interface AnnotateWith {
 
-	@Min(0)
-	Integer id;
+	Class<? extends Annotation> value();
 
-	@MyConst
-	Integer name;
+	AnnotationTarget target() default AnnotationTarget.CONSTRUCTOR;
+
+	String values() default "";
+
+	public enum AnnotationTarget {
+		TYPE,
+
+		CONSTRUCTOR,
+
+		CONSTRUCTOR_PARAMETER;
+	}
 }

@@ -21,7 +21,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import ninja.siden.okite.Constraint.Implements;
+import ninja.siden.okite.Constraint.Policy;
 import ninja.siden.okite.constraint.PatternConstraint;
 
 /**
@@ -43,6 +43,8 @@ public @interface Pattern {
 	String messageId() default "okite.pattern";
 
 	int order() default 0;
+
+	Policy policy() default Policy.ContinueToNextField;
 
 	@Target({ ElementType.FIELD, ElementType.METHOD })
 	public @interface List {

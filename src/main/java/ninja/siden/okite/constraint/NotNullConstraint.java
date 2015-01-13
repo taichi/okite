@@ -15,7 +15,7 @@
  */
 package ninja.siden.okite.constraint;
 
-import java.util.Optional;
+import java.util.stream.Stream;
 
 import ninja.siden.okite.ValidationContext;
 import ninja.siden.okite.Violation;
@@ -26,8 +26,8 @@ import ninja.siden.okite.Violation;
 public class NotNullConstraint<V> extends DefaultConstraint<V> {
 
 	@Override
-	public Optional<Violation> validate(V value, ValidationContext context) {
-		return value != null ? Optional.empty() : Optional.of(context
-				.to(this.messageId()));
+	public Stream<Violation> validate(V value, ValidationContext context) {
+		return value != null ? Stream.empty() : Stream.of(context.to(this
+				.messageId()));
 	}
 }

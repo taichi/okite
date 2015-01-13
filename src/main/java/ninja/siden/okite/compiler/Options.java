@@ -13,21 +13,36 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package ninja.siden.okite;
+package ninja.siden.okite.compiler;
 
-import ninja.siden.okite.annotation.Min;
-import ninja.siden.okite.compiler.test.MyConst;
-import ninja.siden.okite.compiler.test.MyValidation;
+import java.util.Date;
+
+import javax.annotation.processing.ProcessingEnvironment;
+
+import ninja.siden.okite.Constants;
 
 /**
  * @author taichi
  */
-@MyValidation
-public class Department {
+public class Options {
 
-	@Min(0)
-	Integer id;
+	final ProcessingEnvironment env;
 
-	@MyConst
-	Integer name;
+	public Options(ProcessingEnvironment env) {
+		super();
+		this.env = env;
+	}
+
+	public boolean debug() {
+		String debug = env.getOptions().get("DEBUG");
+		return Boolean.parseBoolean(debug);
+	}
+
+	public String version() {
+		return debug() ? "@@VERSION@@" : Constants.VERSION;
+	}
+
+	public Date now() {
+		return debug() ? new Date(0L) : new Date();
+	}
 }

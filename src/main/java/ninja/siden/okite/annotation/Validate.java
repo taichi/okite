@@ -16,15 +16,23 @@
 package ninja.siden.okite.annotation;
 
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
+import ninja.siden.okite.Constraint.Policy;
 
 /**
  * @author taichi
  */
+@Retention(RetentionPolicy.SOURCE)
 @Target(ElementType.METHOD)
+@Emitter("ninja.siden.okite.compiler.internal.ValidateEmitter")
 public @interface Validate {
 
-	String target() default "validate";
+	String messageId() default "okite.validate";
 
 	int order() default 0;
+
+	Policy policy() default Policy.ContinueToNextField;
 }

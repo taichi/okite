@@ -52,7 +52,7 @@ public class MaxConstraintTest {
 			}
 		}.getMockInstance();
 
-		Optional<Violation> opt = this.target.validate(11, context);
+		Optional<Violation> opt = this.target.validate(11, context).findFirst();
 		assertTrue(opt.isPresent());
 	}
 
@@ -66,7 +66,7 @@ public class MaxConstraintTest {
 			}
 		}.getMockInstance();
 
-		Optional<Violation> opt = this.target.validate(10, context);
+		Optional<Violation> opt = this.target.validate(10, context).findFirst();
 		assertFalse(opt.isPresent());
 	}
 
@@ -80,7 +80,7 @@ public class MaxConstraintTest {
 			}
 		}.getMockInstance();
 
-		Optional<Violation> opt = this.target.validate(9, context);
+		Optional<Violation> opt = this.target.validate(9, context).findFirst();
 		assertFalse(opt.isPresent());
 	}
 }

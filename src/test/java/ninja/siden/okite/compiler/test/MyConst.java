@@ -13,21 +13,25 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package ninja.siden.okite;
+package ninja.siden.okite.compiler.test;
 
-import ninja.siden.okite.annotation.Min;
-import ninja.siden.okite.compiler.test.MyConst;
-import ninja.siden.okite.compiler.test.MyValidation;
+import ninja.siden.okite.Constraint.Policy;
+import ninja.siden.okite.annotation.Implements;
+import ninja.siden.okite.constraint.RangeConstraint;
 
 /**
  * @author taichi
  */
-@MyValidation
-public class Department {
+@Implements(RangeConstraint.class)
+public @interface MyConst {
 
-	@Min(0)
-	Integer id;
+	long min() default 0L;
 
-	@MyConst
-	Integer name;
+	long max() default Long.MAX_VALUE;
+
+	String messageId() default "okite.range";
+
+	int order() default 0;
+
+	Policy policy() default Policy.ContinueToNextField;
 }

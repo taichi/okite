@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 SATO taichi
+ * Copyright 2014 SATO taichi
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,21 +13,28 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package ninja.siden.okite;
+package ninja.siden.okite.constraint;
 
-import ninja.siden.okite.annotation.Min;
-import ninja.siden.okite.compiler.test.MyConst;
-import ninja.siden.okite.compiler.test.MyValidation;
+import java.util.stream.Stream;
+
+import ninja.siden.okite.ValidationContext;
+import ninja.siden.okite.Validator;
+import ninja.siden.okite.Violation;
 
 /**
  * @author taichi
  */
-@MyValidation
-public class Department {
+public class CascadeConstraint<V> extends DefaultConstraint<V> {
 
-	@Min(0)
-	Integer id;
+	final Validator<V> delegate;
 
-	@MyConst
-	Integer name;
+	public CascadeConstraint(Validator<V> delegate) {
+		this.delegate = delegate;
+	}
+
+	@Override
+	public Stream<Violation> validate(V value, ValidationContext context) {
+		return this.delegate.validate(value);
+	}
+
 }

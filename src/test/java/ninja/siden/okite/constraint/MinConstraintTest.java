@@ -16,7 +16,6 @@
 package ninja.siden.okite.constraint;
 
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
@@ -53,7 +52,7 @@ public class MinConstraintTest {
 			}
 		}.getMockInstance();
 
-		Optional<Violation> opt = this.target.validate(11, context);
+		Optional<Violation> opt = this.target.validate(11, context).findFirst();
 		assertFalse(opt.isPresent());
 	}
 
@@ -67,7 +66,7 @@ public class MinConstraintTest {
 			}
 		}.getMockInstance();
 
-		Optional<Violation> opt = this.target.validate(10, context);
+		Optional<Violation> opt = this.target.validate(10, context).findFirst();
 		assertFalse(opt.isPresent());
 	}
 
@@ -81,9 +80,7 @@ public class MinConstraintTest {
 			}
 		}.getMockInstance();
 
-		Optional<Violation> opt = this.target.validate(9, context);
+		Optional<Violation> opt = this.target.validate(9, context).findFirst();
 		assertTrue(opt.isPresent());
-		assertNotNull(opt.get().toMessage());
-
 	}
 }

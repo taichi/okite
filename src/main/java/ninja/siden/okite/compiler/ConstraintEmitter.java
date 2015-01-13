@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 SATO taichi
+ * Copyright 2014 - 2015 SATO taichi
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,21 +13,23 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package ninja.siden.okite;
+package ninja.siden.okite.compiler;
 
-import ninja.siden.okite.annotation.Min;
-import ninja.siden.okite.compiler.test.MyConst;
-import ninja.siden.okite.compiler.test.MyValidation;
+import java.io.PrintWriter;
+
+import javax.annotation.processing.ProcessingEnvironment;
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.VariableElement;
 
 /**
  * @author taichi
  */
-@MyValidation
-public class Department {
+public interface ConstraintEmitter {
 
-	@Min(0)
-	Integer id;
+	void emit(ProcessingEnvironment env, PrintWriter pw, AnnotationMirror am,
+			VariableElement field);
 
-	@MyConst
-	Integer name;
+	void emit(ProcessingEnvironment env, PrintWriter pw, AnnotationMirror am,
+			ExecutableElement method);
 }

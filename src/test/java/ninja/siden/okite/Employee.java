@@ -15,16 +15,20 @@
  */
 package ninja.siden.okite;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import ninja.siden.okite.Validator.Validation;
+import javax.annotation.Resource;
+
 import ninja.siden.okite.annotation.Cascade;
 import ninja.siden.okite.annotation.Min;
 import ninja.siden.okite.annotation.NotNull;
 import ninja.siden.okite.annotation.Pattern;
 import ninja.siden.okite.annotation.Validate;
+import ninja.siden.okite.annotation.Validation;
+import ninja.siden.okite.compiler.test.MyConst;
 
 /**
  * @author taichi
@@ -48,7 +52,31 @@ public class Employee {
 		return result;
 	}
 
-	@NotNull
-	@Cascade
+	public List<Violation> argsMissed(ValidationContext context, String name) {
+		return null;
+	}
+
+	public String retunTypeMissed(ValidationContext context) {
+		return null;
+	}
+
+	@Resource
+	public List<Violation> missAnnotation(ValidationContext context) {
+		return null;
+	}
+
+	static int CONST = 10;
+
+	@NotNull(order = 10)
+	@Cascade(order = 20)
 	Department dept;
+
+	@MyConst
+	Integer combo() {
+		return 1;
+	}
+
+	@Resource
+	BigDecimal nonValidate;
+
 }

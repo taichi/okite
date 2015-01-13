@@ -20,7 +20,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import ninja.siden.okite.Constraint.Implements;
+import ninja.siden.okite.Constraint.Policy;
 import ninja.siden.okite.constraint.MinConstraint;
 
 /**
@@ -36,4 +36,6 @@ public @interface Min {
 	String messageId() default "okite.min";
 
 	int order() default 0;
+
+	Policy policy() default Policy.ContinueToNextField;
 }

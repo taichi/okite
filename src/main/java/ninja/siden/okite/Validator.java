@@ -15,10 +15,6 @@
  */
 package ninja.siden.okite;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 import java.util.stream.Stream;
 
 /**
@@ -27,15 +23,4 @@ import java.util.stream.Stream;
 public interface Validator<T> {
 
 	Stream<Violation> validate(T value);
-
-	@Retention(RetentionPolicy.SOURCE)
-	@Target({ ElementType.ANNOTATION_TYPE, ElementType.TYPE })
-	public @interface Validation {
-
-		String prefix() default "";
-
-		String suffix() default "$$Validator";
-
-		boolean cascading() default false;
-	}
 }

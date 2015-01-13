@@ -18,7 +18,6 @@ package ninja.siden.okite.internal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.SortedSet;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -43,8 +42,7 @@ public abstract class BaseValidator<T> implements Validator<T> {
 
 	protected <V> Stream<Violation> validate(V value,
 			SortedSet<Constraint<V>> constraints, ValidationContext context) {
-		return constraints.stream().map(s -> s.validate(value, context))
-				.filter(Optional::isPresent).map(Optional::get);
+		return constraints.stream().flatMap(s -> s.validate(value, context));
 	}
 
 	protected Stream<Violation> convert(Violation[] result) {

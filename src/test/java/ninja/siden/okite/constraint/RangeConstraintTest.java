@@ -53,7 +53,7 @@ public class RangeConstraintTest {
 			}
 		}.getMockInstance();
 
-		Optional<Violation> opt = this.target.validate(12, context);
+		Optional<Violation> opt = this.target.validate(12, context).findFirst();
 		assertTrue(opt.isPresent());
 	}
 
@@ -67,8 +67,8 @@ public class RangeConstraintTest {
 			}
 		}.getMockInstance();
 
-		assertFalse(this.target.validate(7, context).isPresent());
-		assertFalse(this.target.validate(11, context).isPresent());
+		assertFalse(this.target.validate(7, context).findFirst().isPresent());
+		assertFalse(this.target.validate(11, context).findFirst().isPresent());
 	}
 
 	@Test
@@ -81,7 +81,7 @@ public class RangeConstraintTest {
 			}
 		}.getMockInstance();
 
-		Optional<Violation> opt = this.target.validate(6, context);
+		Optional<Violation> opt = this.target.validate(6, context).findFirst();
 		assertTrue(opt.isPresent());
 	}
 }

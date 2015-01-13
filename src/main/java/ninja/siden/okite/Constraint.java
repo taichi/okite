@@ -15,16 +15,14 @@
  */
 package ninja.siden.okite;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Target;
-import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  * @author taichi
  */
 public interface Constraint<V> extends Comparable<Constraint<V>> {
 
-	Optional<Violation> validate(V value, ValidationContext context);
+	Stream<Violation> validate(V value, ValidationContext context);
 
 	String messageId();
 
@@ -34,14 +32,16 @@ public interface Constraint<V> extends Comparable<Constraint<V>> {
 
 	Constraint<V> order(int order);
 
+	Policy policy();
+
+	Constraint<V> policy(Policy policy);
+
 	@Override
 	default int compareTo(Constraint<V> o) {
 		return Integer.compare(order(), o.order());
 	}
 
-	@Target(ElementType.ANNOTATION_TYPE)
-	public @interface Implements {
-		@SuppressWarnings("rawtypes")
-		Class<? extends Constraint> value();
+	public enum Policy {
+		StopOnError, ContinueOnError, ContinueToNextField;
 	}
 }

@@ -16,7 +16,7 @@
 package ninja.siden.okite.constraint;
 
 import java.util.Arrays;
-import java.util.Optional;
+import java.util.stream.Stream;
 
 import ninja.siden.okite.ValidationContext;
 import ninja.siden.okite.Violation;
@@ -39,11 +39,11 @@ public class MaxConstraint<V extends Number & Comparable<V>> extends
 	}
 
 	@Override
-	public Optional<Violation> validate(V value, ValidationContext context) {
+	public Stream<Violation> validate(V value, ValidationContext context) {
 		if (value == null || -1 < this.max.compareTo(value)) {
-			return Optional.empty();
+			return Stream.empty();
 		}
-		return Optional.of(context.to(this.messageId(),
+		return Stream.of(context.to(this.messageId(),
 				Arrays.asList(this.value())));
 	}
 

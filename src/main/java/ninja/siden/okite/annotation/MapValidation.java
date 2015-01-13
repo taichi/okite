@@ -13,21 +13,32 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package ninja.siden.okite;
+package ninja.siden.okite.annotation;
 
-import ninja.siden.okite.annotation.Min;
-import ninja.siden.okite.compiler.test.MyConst;
-import ninja.siden.okite.compiler.test.MyValidation;
+import java.lang.annotation.Annotation;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * @author taichi
  */
-@MyValidation
-public class Department {
+@Retention(RetentionPolicy.SOURCE)
+@Target({ ElementType.ANNOTATION_TYPE, ElementType.TYPE })
+public @interface MapValidation {
 
-	@Min(0)
-	Integer id;
+	// default validations
+	Class<? extends Annotation>[] value() default {};
 
-	@MyConst
-	Integer name;
+	boolean cascading() default false;
+
+	AnnotateWith[] with() default {};
+
+	public interface ValueMapper {
+
+		String get(String key);
+
+		String[] getValues(String key);
+	}
 }

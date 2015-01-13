@@ -13,21 +13,15 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package ninja.siden.okite;
+package ninja.siden.okite.compiler.test;
 
-import ninja.siden.okite.annotation.Min;
-import ninja.siden.okite.compiler.test.MyConst;
-import ninja.siden.okite.compiler.test.MyValidation;
+import ninja.siden.okite.annotation.NotNull;
+import ninja.siden.okite.annotation.Validation;
 
 /**
  * @author taichi
  */
-@MyValidation
-public class Department {
+@Validation(NotNull.class)
+public @interface MyValidation {
 
-	@Min(0)
-	Integer id;
-
-	@MyConst
-	Integer name;
 }

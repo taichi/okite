@@ -3,9 +3,11 @@ package ninja.siden.okite;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import ninja.siden.okite.constraint.CascadeConstraint;
 import ninja.siden.okite.constraint.MinConstraint;
 import ninja.siden.okite.constraint.NotNullConstraint;
 import ninja.siden.okite.constraint.PatternConstraint;
+import ninja.siden.okite.constraint.RangeConstraint;
 import ninja.siden.okite.internal.BaseValidator;
 import ninja.siden.okite.internal.DefaultValidationContext;
 
@@ -17,6 +19,7 @@ public class Employee$$Validator extends BaseValidator<Employee> {
 		_name(resolver);
 		_validate(resolver);
 		_dept(resolver);
+		_combo(resolver);
 	}
 
 	private void _id(MessageResolver resolver) {
@@ -65,11 +68,27 @@ public class Employee$$Validator extends BaseValidator<Employee> {
 			c.order(10);
 			constraints.add(c);
 		}
+		{
+			Validator<Department> cacade = new Department$$Validator(resolver);
+			CascadeConstraint<Department> c = new CascadeConstraint<>(cacade);
+			c.order(20);
+			constraints.add(c);
+		}
 
 		validations.add(v -> validate(v.dept, constraints,
-				new DefaultValidationContext(resolver, "id")));
+				new DefaultValidationContext(resolver, "dept")));
+	}
 
-		Validator<Department> validator = new Department$$Validator(resolver);
-		validations.add(v -> validator.validate(v.dept));
+	private void _combo(MessageResolver resolver) {
+		SortedSet<Constraint<Integer>> constraints = new TreeSet<>();
+		{
+			RangeConstraint<Integer> c = new RangeConstraint<>();
+			c.min(3);
+			c.max(5);
+			constraints.add(c);
+		}
+
+		validations.add(v -> validate(v.combo(), constraints,
+				new DefaultValidationContext(resolver, "combo")));
 	}
 }

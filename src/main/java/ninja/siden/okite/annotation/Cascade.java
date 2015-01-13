@@ -23,7 +23,12 @@ import java.lang.annotation.Target;
 /**
  * @author taichi
  */
-@Target({ ElementType.METHOD, ElementType.FIELD })
 @Retention(RetentionPolicy.SOURCE)
+@Target({ ElementType.METHOD, ElementType.FIELD })
+@Emitter("ninja.siden.okite.compiler.internal.CascadeEmitter")
 public @interface Cascade {
+
+	int order() default 0;
+
+	boolean value() default true;
 }

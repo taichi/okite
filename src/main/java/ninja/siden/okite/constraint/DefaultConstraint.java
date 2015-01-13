@@ -15,6 +15,8 @@
  */
 package ninja.siden.okite.constraint;
 
+import java.util.Objects;
+
 import ninja.siden.okite.Constraint;
 
 /**
@@ -26,6 +28,8 @@ public abstract class DefaultConstraint<V> implements Constraint<V> {
 
 	int order = 0;
 
+	Policy policy = Policy.StopOnError;
+
 	@Override
 	public String messageId() {
 		return this.messageId;
@@ -33,7 +37,7 @@ public abstract class DefaultConstraint<V> implements Constraint<V> {
 
 	@Override
 	public Constraint<V> messageId(String id) {
-		this.messageId = id;
+		this.messageId = Objects.requireNonNull(id);
 		return this;
 	}
 
@@ -48,4 +52,14 @@ public abstract class DefaultConstraint<V> implements Constraint<V> {
 		return this;
 	}
 
+	@Override
+	public ninja.siden.okite.Constraint.Policy policy() {
+		return this.policy;
+	}
+
+	@Override
+	public Constraint<V> policy(ninja.siden.okite.Constraint.Policy policy) {
+		this.policy = Objects.requireNonNull(policy);
+		return this;
+	}
 }

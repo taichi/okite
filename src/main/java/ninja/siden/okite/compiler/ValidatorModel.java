@@ -13,21 +13,24 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package ninja.siden.okite;
+package ninja.siden.okite.compiler;
 
-import ninja.siden.okite.annotation.Min;
-import ninja.siden.okite.compiler.test.MyConst;
-import ninja.siden.okite.compiler.test.MyValidation;
+import java.util.stream.Stream;
+
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 
 /**
  * @author taichi
  */
-@MyValidation
-public class Department {
+public class ValidatorModel {
 
-	@Min(0)
-	Integer id;
+	TypeElement target;
 
-	@MyConst
-	Integer name;
+	Stream<VariableElement> fields;
+
+	Stream<ExecutableElement> values;
+
+	Stream<ExecutableElement> validates;
 }
