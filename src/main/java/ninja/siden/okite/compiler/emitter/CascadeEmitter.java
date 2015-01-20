@@ -133,6 +133,13 @@ public class CascadeEmitter extends DefaultEmitter {
 					toVariableType(env, target, 0) };
 			return Optional.of(s);
 		}
+		if (typeUtils.isAssignable(erasure,
+				elemUtils.getTypeElement(Optional.class).get().asType())) {
+			String[] s = {
+					CascadeConstraint.ForOptional.class.getCanonicalName(),
+					toVariableType(env, target, 0) };
+			return Optional.of(s);
+		}
 		if (typeUtils.isAssignable(erasure, elemUtils.getTypeElement(Map.class)
 				.get().asType())) {
 			String[] s = { CascadeConstraint.ForMap.class.getCanonicalName(),

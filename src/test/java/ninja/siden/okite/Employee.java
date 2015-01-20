@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.annotation.Generated;
 import javax.annotation.Resource;
@@ -30,6 +31,7 @@ import ninja.siden.okite.annotation.AnnotateWith.AnnotationTarget;
 import ninja.siden.okite.annotation.Cascade;
 import ninja.siden.okite.annotation.Max;
 import ninja.siden.okite.annotation.Min;
+import ninja.siden.okite.annotation.NotEmpty;
 import ninja.siden.okite.annotation.NotNull;
 import ninja.siden.okite.annotation.Pattern;
 import ninja.siden.okite.annotation.Size;
@@ -99,6 +101,9 @@ public class Employee {
 
 	@Size(min = 1)
 	Map<String, Project> mapping;
+
+	@NotEmpty
+	Optional<Project> opt;
 
 	@MyConst
 	Long combo() {

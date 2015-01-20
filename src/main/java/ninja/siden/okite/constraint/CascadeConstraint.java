@@ -17,8 +17,10 @@ package ninja.siden.okite.constraint;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import ninja.siden.okite.ValidationContext;
 import ninja.siden.okite.Validator;
@@ -112,5 +114,28 @@ public class CascadeConstraint<V> extends DefaultConstraint<V> {
 			return CascadeConstraint.validate(delegate, value.values(),
 					policy(), context);
 		}
+	}
+
+	public static class ForOptional<V, X> extends
+			DefaultConstraint<Optional<V>> {
+		final Validator<V> delegate;
+
+		public void value(boolean value) {
+		}
+
+		public ForOptional(Validator<V> delegate) {
+			this.delegate = delegate;
+		}
+
+		@Override
+		public List<Violation> validate(Optional<V> value,
+				ValidationContext context) {
+			if (value == null) {
+				return Collections.emptyList();
+			}
+			return value.map(v -> delegate.validate(v)).orElse(
+					Collections.emptyList());
+		}
+
 	}
 }
