@@ -19,12 +19,4 @@ dependencies {
 	compile 'io.gige:gige:0.4.0'
 }
 
-apply plugin: 'eclipse'
-
-eclipse {
-	classpath {
-		containers = [
-			'org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8'
-		]
-	}
-}
+apply from: 'gradle/eclipse.gradle'
