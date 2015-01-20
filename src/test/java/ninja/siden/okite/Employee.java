@@ -19,13 +19,20 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
+import javax.annotation.Generated;
 import javax.annotation.Resource;
 
+import ninja.siden.okite.Constraint.Policy;
+import ninja.siden.okite.annotation.AnnotateWith;
+import ninja.siden.okite.annotation.AnnotateWith.AnnotationTarget;
 import ninja.siden.okite.annotation.Cascade;
+import ninja.siden.okite.annotation.Max;
 import ninja.siden.okite.annotation.Min;
 import ninja.siden.okite.annotation.NotNull;
 import ninja.siden.okite.annotation.Pattern;
+import ninja.siden.okite.annotation.Size;
 import ninja.siden.okite.annotation.Validate;
 import ninja.siden.okite.annotation.Validation;
 import ninja.siden.okite.compiler.test.MyConst;
@@ -33,14 +40,21 @@ import ninja.siden.okite.compiler.test.MyConst;
 /**
  * @author taichi
  */
-@Validation(cascading = true)
+@Validation(cascading = true, with = {
+		@AnnotateWith(value = Resource.class, target = AnnotationTarget.TYPE),
+		// @AnnotateWith(value = Validation.class, target =
+		// AnnotationTarget.TYPE),
+		@AnnotateWith(value = Generated.class, values = "value={\"aaa\",\"bbb\"}") })
 public class Employee {
 
 	@Min(0)
-	Integer id;
+	@Max
+	int id;
 
-	@NotNull(order = 10)
-	@Pattern(value = "[a-z]+", order = 20)
+	@NotNull(order = 10, policy = Policy.ContinueOnError)
+	@Pattern(value = "[a-z]+", order = 20, policy = Policy.ContinueToNextTarget)
+	@Pattern(value = "[0-9]+", order = 15, policy = Policy.StopOnError)
+	@Size(max = 10, order = 13)
 	String name;
 
 	@Validate
@@ -68,12 +82,27 @@ public class Employee {
 	static int CONST = 10;
 
 	@NotNull(order = 10)
-	@Cascade(order = 20)
+	@Cascade(order = 20, value = false)
 	Department dept;
 
+	@NotNull(order = 10)
+	Department dept2;
+
+	@Cascade
+	Project prj;
+
+	@NotNull
+	Project[] subProjects;
+
+	@NotNull
+	List<Project> subSubProj;
+
+	@Size(min = 1)
+	Map<String, Project> mapping;
+
 	@MyConst
-	Integer combo() {
-		return 1;
+	Long combo() {
+		return 1L;
 	}
 
 	@Resource

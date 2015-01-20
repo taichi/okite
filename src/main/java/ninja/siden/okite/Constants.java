@@ -23,4 +23,9 @@ public interface Constants {
 	String NAME = "ninja.siden.okite";
 
 	String VERSION = "0.1.0";
+
+	String DEFAULT_PREFIX = "";
+
+	String DEFAULT_SUFFIX = "$$Validator";
+
 }

@@ -19,7 +19,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
-import java.util.Optional;
 
 import mockit.Mock;
 import mockit.MockUp;
@@ -34,11 +33,11 @@ import org.junit.Test;
  */
 public class MinConstraintTest {
 
-	MinConstraint<Integer> target;
+	MinConstraint.ForNumber<Integer> target;
 
 	@Before
 	public void setUp() {
-		this.target = new MinConstraint<>();
+		this.target = new MinConstraint.ForNumber<>();
 		this.target.value(10);
 	}
 
@@ -52,8 +51,8 @@ public class MinConstraintTest {
 			}
 		}.getMockInstance();
 
-		Optional<Violation> opt = this.target.validate(11, context).findFirst();
-		assertFalse(opt.isPresent());
+		List<Violation> r = this.target.validate(11, context);
+		assertTrue(r.isEmpty());
 	}
 
 	@Test
@@ -66,8 +65,8 @@ public class MinConstraintTest {
 			}
 		}.getMockInstance();
 
-		Optional<Violation> opt = this.target.validate(10, context).findFirst();
-		assertFalse(opt.isPresent());
+		List<Violation> r = this.target.validate(10, context);
+		assertTrue(r.isEmpty());
 	}
 
 	@Test
@@ -80,7 +79,8 @@ public class MinConstraintTest {
 			}
 		}.getMockInstance();
 
-		Optional<Violation> opt = this.target.validate(9, context).findFirst();
-		assertTrue(opt.isPresent());
+		List<Violation> r = this.target.validate(9, context);
+		assertFalse(r.isEmpty());
+
 	}
 }

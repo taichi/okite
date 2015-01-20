@@ -16,22 +16,23 @@
 package ninja.siden.okite.compiler.test;
 
 import ninja.siden.okite.Constraint.Policy;
-import ninja.siden.okite.annotation.Implements;
-import ninja.siden.okite.constraint.RangeConstraint;
+import ninja.siden.okite.annotation.Emitter;
 
 /**
  * @author taichi
  */
-@Implements(RangeConstraint.class)
+@Emitter("ninja.siden.okite.compiler.emitter.RangeEmitter")
 public @interface MyConst {
 
 	long min() default 0L;
 
 	long max() default Long.MAX_VALUE;
 
+	boolean inclusive() default true;
+
 	String messageId() default "okite.range";
 
 	int order() default 0;
 
-	Policy policy() default Policy.ContinueToNextField;
+	Policy policy() default Policy.ContinueToNextTarget;
 }

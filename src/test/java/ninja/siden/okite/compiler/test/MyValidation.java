@@ -15,13 +15,12 @@
  */
 package ninja.siden.okite.compiler.test;
 
-import ninja.siden.okite.annotation.NotNull;
 import ninja.siden.okite.annotation.Validation;
 
 /**
  * @author taichi
  */
-@Validation(NotNull.class)
+@Validation
 public @interface MyValidation {
 
 }

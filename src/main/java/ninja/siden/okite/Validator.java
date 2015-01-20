@@ -15,12 +15,14 @@
  */
 package ninja.siden.okite;
 
-import java.util.stream.Stream;
+import java.util.List;
 
 /**
  * @author taichi
  */
 public interface Validator<T> {
 
-	Stream<Violation> validate(T value);
+	List<Violation> validate(T value);
+
+	List<Violation> validate(T value, ValidationContext context);
 }

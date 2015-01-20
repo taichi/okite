@@ -15,36 +15,112 @@
  */
 package ninja.siden.okite.constraint;
 
-import java.util.Arrays;
-import java.util.stream.Stream;
-
-import ninja.siden.okite.ValidationContext;
-import ninja.siden.okite.Violation;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
 /**
  * @author taichi
  */
-public class MaxConstraint<V extends Number & Comparable<V>> extends
-		DefaultConstraint<V> {
+public class MaxConstraint {
 
-	V max;
-
-	public V value() {
-		return this.max;
-	}
-
-	public MaxConstraint<V> value(V value) {
-		this.max = value;
-		return this;
-	}
-
-	@Override
-	public Stream<Violation> validate(V value, ValidationContext context) {
-		if (value == null || -1 < this.max.compareTo(value)) {
-			return Stream.empty();
+	public static boolean validate(long expected, Double actual,
+			boolean inclusive) {
+		if (actual == Double.NEGATIVE_INFINITY) {
+			return true;
 		}
-		return Stream.of(context.to(this.messageId(),
-				Arrays.asList(this.value())));
+		if (actual == Double.POSITIVE_INFINITY || actual.isNaN()) {
+			return false;
+		}
+		return inclusive ? actual.longValue() <= expected
+				: actual.longValue() < expected;
 	}
 
+	public static boolean validate(long expected, Float actual,
+			boolean inclusive) {
+		if (actual == Float.NEGATIVE_INFINITY) {
+			return true;
+		}
+		if (actual == Float.POSITIVE_INFINITY || actual.isNaN()) {
+			return false;
+		}
+		return inclusive ? actual.longValue() <= expected
+				: actual.longValue() < expected;
+	}
+
+	public static <T extends BigDecimal> boolean validate(long expected,
+			T actual, boolean inclusive) {
+		int result = actual.compareTo(BigDecimal.valueOf(expected));
+		return inclusive ? 0 < result : -1 < result;
+	}
+
+	public static <T extends BigInteger> boolean validate(long expected,
+			T actual, boolean inclusive) {
+		int result = actual.compareTo(BigInteger.valueOf(expected));
+		return inclusive ? 0 < result : -1 < result;
+	}
+
+	public static <T extends Number> boolean validate(long expected, T actual,
+			boolean inclusive) {
+		return inclusive ? actual.longValue() <= expected
+				: actual.longValue() < expected;
+	}
+
+	public static <T extends CharSequence> boolean validate(long expected,
+			T actual, boolean inclusive) {
+		BigDecimal big = new BigDecimal(actual.toString());
+		int result = big.compareTo(BigDecimal.valueOf(expected));
+		return inclusive ? 0 < result : -1 < result;
+	}
+
+	public static class ForDouble<T> extends BoundaryConstraint<Double> {
+		@Override
+		protected boolean validate(Double actual) {
+			return MaxConstraint.validate(this.value(), actual,
+					this.inclusive());
+		}
+	}
+
+	public static class ForFloat<T> extends BoundaryConstraint<Float> {
+		@Override
+		protected boolean validate(Float actual) {
+			return MaxConstraint.validate(this.value(), actual,
+					this.inclusive());
+		}
+	}
+
+	public static class ForBigDecimal<T extends BigDecimal> extends
+			BoundaryConstraint<T> {
+		@Override
+		protected boolean validate(T actual) {
+			return MaxConstraint.validate(this.value(), actual,
+					this.inclusive());
+		}
+	}
+
+	public static class ForBigInteger<T extends BigInteger> extends
+			BoundaryConstraint<T> {
+		@Override
+		protected boolean validate(T actual) {
+			return MaxConstraint.validate(this.value(), actual,
+					this.inclusive());
+		}
+	}
+
+	public static class ForNumber<T extends Number> extends
+			BoundaryConstraint<T> {
+		@Override
+		protected boolean validate(T actual) {
+			return MaxConstraint.validate(this.value(), actual,
+					this.inclusive());
+		}
+	}
+
+	public static class ForCharSequence<T extends CharSequence> extends
+			BoundaryConstraint<T> {
+		@Override
+		protected boolean validate(T actual) {
+			return MaxConstraint.validate(this.value(), actual,
+					this.inclusive());
+		}
+	}
 }

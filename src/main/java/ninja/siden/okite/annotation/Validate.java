@@ -27,12 +27,12 @@ import ninja.siden.okite.Constraint.Policy;
  */
 @Retention(RetentionPolicy.SOURCE)
 @Target(ElementType.METHOD)
-@Emitter("ninja.siden.okite.compiler.internal.ValidateEmitter")
+@Emitter("ninja.siden.okite.compiler.emitter.ValidateEmitter")
 public @interface Validate {
 
 	String messageId() default "okite.validate";
 
 	int order() default 0;
 
-	Policy policy() default Policy.ContinueToNextField;
+	Policy policy() default Policy.ContinueToNextTarget;
 }

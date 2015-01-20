@@ -15,8 +15,11 @@
  */
 package ninja.siden.okite.constraint;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Arrays;
-import java.util.stream.Stream;
+import java.util.Collections;
+import java.util.List;
 
 import ninja.siden.okite.ValidationContext;
 import ninja.siden.okite.Violation;
@@ -24,39 +27,103 @@ import ninja.siden.okite.Violation;
 /**
  * @author taichi
  */
-public class RangeConstraint<V extends Number & Comparable<V>> extends
-		DefaultConstraint<V> {
+public abstract class RangeConstraint<V> extends DefaultConstraint<V> {
 
-	V min;
+	long min = 0L;
 
-	V max;
+	long max = Long.MAX_VALUE;
 
-	public V min() {
+	boolean inclusive = true;
+
+	public long min() {
 		return this.min;
 	}
 
-	public RangeConstraint<V> min(V value) {
+	public void min(long value) {
 		this.min = value;
-		return this;
 	}
 
-	public V max() {
+	public long max() {
 		return this.max;
 	}
 
-	public RangeConstraint<V> max(V value) {
+	public void max(long value) {
 		this.max = value;
-		return this;
+	}
+
+	public boolean inclusive() {
+		return this.inclusive;
+	}
+
+	public void inclusive(boolean value) {
+		this.inclusive = value;
 	}
 
 	@Override
-	public Stream<Violation> validate(V value, ValidationContext context) {
-		if (value == null
-				|| (-1 < value.compareTo(this.min) && -1 < this.max
-						.compareTo(value))) {
-			return Stream.empty();
+	public List<Violation> validate(V value, ValidationContext context) {
+		if (value == null || validate(value)) {
+			return Collections.emptyList();
 		}
-		return Stream.of(context.to(this.messageId(),
+		return Arrays.asList(context.to(this.messageId(),
 				Arrays.asList(this.min(), this.max())));
+	}
+
+	protected abstract boolean validate(V actual);
+
+	public static class ForDouble<T> extends RangeConstraint<Double> {
+		@Override
+		protected boolean validate(Double actual) {
+			return MinConstraint.validate(this.min(), actual, this.inclusive())
+					&& MaxConstraint.validate(this.max(), actual,
+							this.inclusive());
+		}
+	}
+
+	public static class ForFloat<T> extends RangeConstraint<Float> {
+		@Override
+		protected boolean validate(Float actual) {
+			return MinConstraint.validate(this.min(), actual, this.inclusive())
+					&& MaxConstraint.validate(this.max(), actual,
+							this.inclusive());
+		}
+	}
+
+	public static class ForBigDecimal<T extends BigDecimal> extends
+			RangeConstraint<T> {
+		@Override
+		protected boolean validate(T actual) {
+			return MinConstraint.validate(this.min(), actual, this.inclusive())
+					&& MaxConstraint.validate(this.max(), actual,
+							this.inclusive());
+		}
+	}
+
+	public static class ForBigInteger<T extends BigInteger> extends
+			RangeConstraint<T> {
+		@Override
+		protected boolean validate(T actual) {
+			return MinConstraint.validate(this.min(), actual, this.inclusive())
+					&& MaxConstraint.validate(this.max(), actual,
+							this.inclusive());
+		}
+	}
+
+	public static class ForNumber<T extends Number> extends RangeConstraint<T> {
+		@Override
+		protected boolean validate(T actual) {
+			return MinConstraint.validate(this.min(), actual, this.inclusive())
+					&& MaxConstraint.validate(this.max(), actual,
+							this.inclusive());
+		}
+	}
+
+	public static class ForCharSequence<T extends CharSequence> extends
+			RangeConstraint<T> {
+		@Override
+		protected boolean validate(T actual) {
+			return MinConstraint.validate(this.min(), actual, this.inclusive())
+					&& MaxConstraint.validate(this.max(), actual,
+							this.inclusive());
+		}
 	}
 }

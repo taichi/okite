@@ -1,0 +1,16 @@
+MapValidationはjava.util.Map<String,String>のようなオブジェクトを対象にバリデーションを行うバリデータを作る為のアノテーション
+ValueMapperによってキー毎にStringだったりString[]だったりしても処理できる。
+ValueMapperの実装としてHttpServletRequestのgetParametersやgetHeaderをラップする。
+
+Optionalへの対応を実装する
+
+コンパイラのプロジェクトとランタイムのプロジェクトを分割すべし
+
+コンパイラが吐くエラーメッセージのメッセージリソースが無い
+
+StreamAPIベースのJavaWriterがほしい
+
+# 参考情報
+
+https://blogs.oracle.com/darcy/entry/an_apt_replacement
+

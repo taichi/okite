@@ -44,10 +44,10 @@ public @interface Pattern {
 
 	int order() default 0;
 
-	Policy policy() default Policy.ContinueToNextField;
+	Policy policy() default Policy.ContinueToNextTarget;
 
 	@Target({ ElementType.FIELD, ElementType.METHOD })
 	public @interface List {
-		public Pattern[] value();
+		Pattern[] value();
 	}
 }

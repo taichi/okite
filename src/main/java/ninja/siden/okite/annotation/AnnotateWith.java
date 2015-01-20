@@ -23,7 +23,7 @@ import java.lang.annotation.Target;
 /**
  * @author taichi
  */
-@Retention(RetentionPolicy.SOURCE)
+@Retention(RetentionPolicy.RUNTIME)
 @Target({})
 public @interface AnnotateWith {
 

@@ -38,18 +38,20 @@ import ninja.siden.okite.Constraint.Policy;
 @Repeatable(Size.List.class)
 @Retention(RetentionPolicy.SOURCE)
 @Target({ ElementType.FIELD, ElementType.METHOD })
-@Emitter("ninja.siden.okite.compiler.internal.SizeEmitter")
+@Emitter("ninja.siden.okite.compiler.emitter.SizeEmitter")
 public @interface Size {
 
 	int min() default 0;
 
 	int max() default Integer.MAX_VALUE;
 
+	boolean inclusive() default true;
+
 	String messageId() default "okite.size";
 
 	int order() default 0;
 
-	Policy policy() default Policy.ContinueToNextField;
+	Policy policy() default Policy.ContinueToNextTarget;
 
 	@Target({ ElementType.FIELD, ElementType.METHOD })
 	public @interface List {

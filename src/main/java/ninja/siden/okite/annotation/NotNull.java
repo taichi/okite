@@ -35,5 +35,5 @@ public @interface NotNull {
 
 	int order() default 0;
 
-	Policy policy() default Policy.ContinueToNextField;
+	Policy policy() default Policy.ContinueToNextTarget;
 }

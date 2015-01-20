@@ -13,24 +13,31 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package ninja.siden.okite.compiler;
+package ninja.siden.okite.compiler.internal;
 
-import java.util.stream.Stream;
+import javax.lang.model.element.AnnotationMirror;
 
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
+import ninja.siden.okite.compiler.AnnotationValues;
+import ninja.siden.okite.compiler.ConstraintEmitter;
+import ninja.siden.okite.compiler.Env;
 
 /**
  * @author taichi
  */
-public class ValidatorModel {
+public class ConstraintInfo {
 
-	TypeElement target;
+	int order;
 
-	Stream<VariableElement> fields;
+	AnnotationMirror constraint;
 
-	Stream<ExecutableElement> values;
+	ConstraintEmitter emitter;
 
-	Stream<ExecutableElement> validates;
+	public ConstraintInfo(Env env, AnnotationMirror constraint,
+			ConstraintEmitter emitter) {
+		this.constraint = constraint;
+		this.emitter = emitter;
+		this.order = env.values.get(constraint, "order").findFirst()
+				.flatMap(AnnotationValues::readInteger).orElse(0);
+	}
+
 }

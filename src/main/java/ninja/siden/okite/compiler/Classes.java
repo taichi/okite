@@ -15,6 +15,8 @@
  */
 package ninja.siden.okite.compiler;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Optional;
 
 import javax.annotation.processing.ProcessingEnvironment;
@@ -31,12 +33,16 @@ public class Classes {
 		this.env = env;
 	}
 
-	public static String toSimpleName(String qualifiedName) {
+	public String toSimpleName(Class<?> clazz) {
+		// TODO cut some package names. cf. lava.lang and some.
+		return toSimpleName(clazz.getCanonicalName());
+	}
+
+	public String toSimpleName(String qualifiedName) {
 		int pos = qualifiedName.lastIndexOf('.');
 		if (pos < 0) {
 			return qualifiedName;
 		}
-		// TODO cut some package names. cf. lava.lang and some.
 		return qualifiedName.substring(pos + 1);
 	}
 
@@ -45,8 +51,7 @@ public class Classes {
 		return opt.map(cls -> {
 			try {
 				return cls.newInstance();
-			} catch (Exception e) {
-				e.printStackTrace();
+			} catch (Throwable e) {
 				this.env.getMessager().printMessage(Kind.WARNING,
 						e.getMessage());
 			}
@@ -60,16 +65,17 @@ public class Classes {
 			@SuppressWarnings("unchecked")
 			Class<T> clazz = (Class<T>) loader.loadClass(className);
 			return Optional.of(clazz);
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-			this.env.getMessager().printMessage(Kind.WARNING, e.getMessage());
+		} catch (Throwable e) {
+			StringWriter sw = new StringWriter();
+			e.printStackTrace(new PrintWriter(sw));
+			this.env.getMessager().printMessage(Kind.WARNING, sw.toString());
 		}
 		return Optional.empty();
 	}
 
 	public ClassLoader findClassLoader() {
 		ClassLoader loader = Thread.currentThread().getContextClassLoader();
-		if (loader == null) {
+		if (loader != null) {
 			return loader;
 		}
 		return Classes.class.getClassLoader();

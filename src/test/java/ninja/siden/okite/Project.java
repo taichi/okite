@@ -15,11 +15,13 @@
  */
 package ninja.siden.okite;
 
+import ninja.siden.okite.annotation.Validation;
 import ninja.siden.okite.compiler.test.MyConst;
 
 /**
  * @author taichi
  */
+@Validation
 public class Project {
 
 	@MyConst

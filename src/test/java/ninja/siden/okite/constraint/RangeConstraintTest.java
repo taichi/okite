@@ -19,7 +19,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
-import java.util.Optional;
 
 import mockit.Mock;
 import mockit.MockUp;
@@ -38,7 +37,7 @@ public class RangeConstraintTest {
 
 	@Before
 	public void setUp() {
-		this.target = new RangeConstraint<>();
+		this.target = new RangeConstraint.ForNumber<>();
 		this.target.min(7);
 		this.target.max(11);
 	}
@@ -53,8 +52,8 @@ public class RangeConstraintTest {
 			}
 		}.getMockInstance();
 
-		Optional<Violation> opt = this.target.validate(12, context).findFirst();
-		assertTrue(opt.isPresent());
+		List<Violation> r = this.target.validate(12, context);
+		assertFalse(r.isEmpty());
 	}
 
 	@Test
@@ -67,8 +66,8 @@ public class RangeConstraintTest {
 			}
 		}.getMockInstance();
 
-		assertFalse(this.target.validate(7, context).findFirst().isPresent());
-		assertFalse(this.target.validate(11, context).findFirst().isPresent());
+		assertTrue(this.target.validate(7, context).isEmpty());
+		assertTrue(this.target.validate(11, context).isEmpty());
 	}
 
 	@Test
@@ -81,7 +80,7 @@ public class RangeConstraintTest {
 			}
 		}.getMockInstance();
 
-		Optional<Violation> opt = this.target.validate(6, context).findFirst();
-		assertTrue(opt.isPresent());
+		List<Violation> r = this.target.validate(6, context);
+		assertFalse(r.isEmpty());
 	}
 }

@@ -19,7 +19,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
-import java.util.Optional;
 
 import mockit.Mock;
 import mockit.MockUp;
@@ -34,11 +33,11 @@ import org.junit.Test;
  */
 public class MaxConstraintTest {
 
-	MaxConstraint<Integer> target;
+	MaxConstraint.ForNumber<Integer> target;
 
 	@Before
 	public void setUp() {
-		this.target = new MaxConstraint<>();
+		this.target = new MaxConstraint.ForNumber<>();
 		this.target.value(10);
 	}
 
@@ -52,8 +51,8 @@ public class MaxConstraintTest {
 			}
 		}.getMockInstance();
 
-		Optional<Violation> opt = this.target.validate(11, context).findFirst();
-		assertTrue(opt.isPresent());
+		List<Violation> r = this.target.validate(11, context);
+		assertFalse(r.isEmpty());
 	}
 
 	@Test
@@ -66,8 +65,9 @@ public class MaxConstraintTest {
 			}
 		}.getMockInstance();
 
-		Optional<Violation> opt = this.target.validate(10, context).findFirst();
-		assertFalse(opt.isPresent());
+		List<Violation> r = this.target.validate(10, context);
+		assertTrue(r.isEmpty());
+
 	}
 
 	@Test
@@ -80,7 +80,7 @@ public class MaxConstraintTest {
 			}
 		}.getMockInstance();
 
-		Optional<Violation> opt = this.target.validate(9, context).findFirst();
-		assertFalse(opt.isPresent());
+		List<Violation> list = this.target.validate(9, context);
+		assertTrue(list.isEmpty());
 	}
 }

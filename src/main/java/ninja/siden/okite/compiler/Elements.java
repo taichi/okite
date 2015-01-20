@@ -29,9 +29,15 @@ import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.NoType;
 import javax.lang.model.type.PrimitiveType;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.type.TypeVariable;
+import javax.lang.model.type.TypeVisitor;
+import javax.lang.model.type.WildcardType;
 import javax.lang.model.util.SimpleElementVisitor8;
+import javax.lang.model.util.SimpleTypeVisitor8;
 import javax.lang.model.util.TypeKindVisitor8;
+import javax.lang.model.util.Types;
 
 /**
  * @author taichi
@@ -104,11 +110,53 @@ public class Elements {
 					@Override
 					public StringBuilder visitDeclared(DeclaredType t,
 							StringBuilder p) {
-						Optional<TypeElement> e = toTypeElement(t);
-						e.ifPresent(te -> p.append(te.getQualifiedName()));
+						toTypeElement(t).ifPresent(
+								te -> p.append(te.getQualifiedName()));
+
+						if (t.getTypeArguments().isEmpty() == false) {
+							p.append("<");
+							for (TypeMirror arg : t.getTypeArguments()) {
+								arg.accept(this, p);
+								p.append(", ");
+							}
+							p.setLength(p.length() - 2);
+							p.append(">");
+						}
 						return p;
 					}
+
+					@Override
+					public StringBuilder visitTypeVariable(TypeVariable t,
+							StringBuilder p) {
+						return p.append(t);
+					}
+
+					@Override
+					public StringBuilder visitWildcard(WildcardType t,
+							StringBuilder p) {
+						p.append("?");
+						TypeMirror extendsBound = t.getExtendsBound();
+						if (extendsBound != null) {
+							p.append(" extends ");
+							extendsBound.accept(this, p);
+						}
+						TypeMirror superBound = t.getSuperBound();
+						if (superBound != null) {
+							p.append(" super ");
+							superBound.accept(this, p);
+						}
+						return p;
+					}
+
+					@Override
+					protected StringBuilder defaultAction(TypeMirror e,
+							StringBuilder p) {
+						p.append(e);
+						throw new IllegalArgumentException(p.toString());
+					}
+
 				}, new StringBuilder());
+
 		return p.length() > 0 ? p.toString() : Object.class.getName();
 	}
 
@@ -135,23 +183,75 @@ public class Elements {
 		}
 	}
 
+	public Stream<? extends AnnotationMirror> findAnnotation(TypeMirror decl,
+			Class<? extends Annotation> clazz) {
+		Element type = env.getTypeUtils().asElement(decl);
+		return findAnnotation(type, clazz);
+	}
+
 	public Stream<? extends AnnotationMirror> findAnnotation(Element element,
 			Class<? extends Annotation> clazz) {
 		Optional<TypeElement> opt = getTypeElement(clazz);
 		if (opt.isPresent()) {
-			TypeMirror anon = opt.get().asType();
-			return element
-					.getAnnotationMirrors()
-					.stream()
-					.filter(am -> env.getTypeUtils().isSameType(
-							am.getAnnotationType(), anon));
+			return findAnnotation(element, opt.get());
 		}
 		return Stream.empty();
+	}
 
+	public Stream<? extends AnnotationMirror> findAnnotation(Element element,
+			TypeElement findFor) {
+		if (element == null || findFor == null) {
+			return Stream.empty();
+		}
+		TypeMirror anon = findFor.asType();
+		return element
+				.getAnnotationMirrors()
+				.stream()
+				.filter(am -> env.getTypeUtils().isSameType(
+						am.getAnnotationType(), anon));
 	}
 
 	public Stream<? extends AnnotationValue> readAnnotation(Element element,
 			Class<? extends Annotation> clazz) {
-		return findAnnotation(element, clazz).flatMap(AnnotationValues::get);
+		AnnotationValues avs = new AnnotationValues(this.env);
+		return findAnnotation(element, clazz).flatMap(avs::get);
+	}
+
+	public TypeMirror boxedType(TypeKind kind) {
+		switch (kind) {
+		case BOOLEAN:
+		case BYTE:
+		case SHORT:
+		case INT:
+		case LONG:
+		case CHAR:
+		case FLOAT:
+		case DOUBLE:
+			Types t = env.getTypeUtils();
+			return t.boxedClass(t.getPrimitiveType(kind)).asType();
+		default:
+			break;
+		}
+		throw new IllegalArgumentException();
+	}
+
+	public TypeMirror toBoxedType(TypeMirror tm) {
+		return tm.accept(new TypeKindVisitor8<TypeMirror, TypeMirror>(tm) {
+			@Override
+			public TypeMirror visitPrimitive(PrimitiveType t, TypeMirror p) {
+				return env.getTypeUtils().boxedClass(t).asType();
+			}
+		}, tm);
+	}
+
+	public TypeVisitor<StringBuilder, StringBuilder> newQNVisitor() {
+		return new SimpleTypeVisitor8<StringBuilder, StringBuilder>() {
+			@Override
+			public StringBuilder visitDeclared(DeclaredType t, StringBuilder p) {
+				toTypeElement(t).ifPresent(
+						te -> p.append(te.getQualifiedName()));
+				return p;
+			}
+		};
 	}
 }

@@ -18,8 +18,9 @@ package ninja.siden.okite.constraint;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 
 import ninja.siden.okite.ValidationContext;
 import ninja.siden.okite.Violation;
@@ -33,64 +34,74 @@ public abstract class SizeConstraint<V> extends DefaultConstraint<V> {
 
 	int max;
 
-	public SizeConstraint<V> min(int value) {
+	boolean inclusive = true;
+
+	public void min(int value) {
 		this.min = value;
-		return this;
 	}
 
 	public int min() {
 		return this.min;
 	}
 
-	public SizeConstraint<V> max(int value) {
+	public void max(int value) {
 		this.max = value;
-		return this;
 	}
 
 	public int max() {
 		return this.max;
 	}
 
+	public boolean inclusive() {
+		return this.inclusive;
+	}
+
+	public void inclusive(boolean value) {
+		this.inclusive = value;
+	}
+
 	@Override
-	public Stream<Violation> validate(V value, ValidationContext context) {
+	public List<Violation> validate(V value, ValidationContext context) {
 		if (value == null) {
-			return Stream.empty();
+			return Collections.emptyList();
 		}
 		int size = getSize(value);
 		if (size < this.min() || this.max() < size) {
-			return Stream.of(context.to(messageId(),
+			return Arrays.asList(context.to(messageId(),
 					Arrays.asList(this.min(), this.max())));
 		}
 
-		return Stream.empty();
+		return Collections.emptyList();
 	}
 
 	protected abstract int getSize(V value);
 
-	public static class CharSequenceSize extends SizeConstraint<CharSequence> {
+	public static class ForCharSequence<V extends CharSequence> extends
+			SizeConstraint<V> {
 		@Override
-		protected int getSize(CharSequence value) {
+		protected int getSize(V value) {
 			return value.length();
 		}
 	}
 
-	public static class CollectionSize extends SizeConstraint<Collection<?>> {
+	public static class ForCollection<V extends Collection<?>> extends
+			SizeConstraint<V> {
 		@Override
-		protected int getSize(Collection<?> value) {
+		protected int getSize(V value) {
 			return value.size();
 		}
 	}
 
-	public static class MapSize extends SizeConstraint<Map<?, ?>> {
+	public static class ForMap<V extends Map<?, ?>> extends SizeConstraint<V> {
 		@Override
-		protected int getSize(Map<?, ?> value) {
+		protected int getSize(V value) {
 			return value.size();
 		}
 	}
 
-	public static class ArraySize extends SizeConstraint<Object> {
+	public static class ForArray<V> extends SizeConstraint<V> {
 		@Override
-		protected int getSize(Object value) {
+		protected int getSize(V value) {
 			return Array.getLength(value);
 		}
 	}

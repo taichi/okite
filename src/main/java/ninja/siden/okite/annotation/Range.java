@@ -22,7 +22,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import ninja.siden.okite.Constraint.Policy;
-import ninja.siden.okite.constraint.RangeConstraint;
 
 /**
  * @author taichi
@@ -30,18 +29,20 @@ import ninja.siden.okite.constraint.RangeConstraint;
 @Repeatable(Range.List.class)
 @Retention(RetentionPolicy.SOURCE)
 @Target({ ElementType.FIELD, ElementType.METHOD })
-@Implements(RangeConstraint.class)
+@Emitter("ninja.siden.okite.compiler.emitter.RangeEmitter")
 public @interface Range {
 
 	long min() default 0L;
 
 	long max() default Long.MAX_VALUE;
 
+	boolean inclusive() default true;
+
 	String messageId() default "okite.range";
 
 	int order() default 0;
 
-	Policy policy() default Policy.ContinueToNextField;
+	Policy policy() default Policy.ContinueToNextTarget;
 
 	@Target({ ElementType.FIELD, ElementType.METHOD })
 	public @interface List {

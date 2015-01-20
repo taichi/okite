@@ -15,16 +15,38 @@
  */
 package ninja.siden.okite.compiler;
 
+import java.util.Comparator;
 import java.util.Date;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 import javax.annotation.processing.ProcessingEnvironment;
+import javax.lang.model.element.Element;
 
 import ninja.siden.okite.Constants;
 
 /**
  * @author taichi
  */
+@SuppressWarnings("unchecked")
 public class Options {
+
+	enum Kind {
+		debug("false"), prefix(Constants.DEFAULT_PREFIX), suffix(
+				Constants.DEFAULT_SUFFIX), casecading("false"),
+		// java, javascript(js), schema(json schema?)
+		output("java");
+
+		String defaut;
+
+		Kind(String value) {
+			this.defaut = value;
+		}
+
+		String toOption() {
+			return Constants.NAME + "." + name();
+		};
+	}
 
 	final ProcessingEnvironment env;
 
@@ -33,9 +55,27 @@ public class Options {
 		this.env = env;
 	}
 
+	public String prefix() {
+		String s = getOption(Kind.prefix);
+		return Objects.toString(s, Constants.DEFAULT_PREFIX);
+	}
+
+	public String suffix() {
+		String s = getOption(Kind.suffix);
+		return Objects.toString(s, Constants.DEFAULT_SUFFIX);
+	}
+
+	public boolean casecading() {
+		return Boolean.parseBoolean(getOption(Kind.casecading));
+	}
+
+	public Stream<String> output() {
+		String s = getOption(Kind.output);
+		return Stream.of(s.split(","));
+	}
+
 	public boolean debug() {
-		String debug = env.getOptions().get("DEBUG");
-		return Boolean.parseBoolean(debug);
+		return Boolean.parseBoolean(getOption(Kind.debug));
 	}
 
 	public String version() {
@@ -44,5 +84,25 @@ public class Options {
 
 	public Date now() {
 		return debug() ? new Date(0L) : new Date();
+	}
+
+	protected String getOption(Kind k) {
+		return this.env.getOptions().get(k.toOption());
+	}
+
+	static final Comparator<Element> memberComparator = newComparator();
+
+	static Comparator<Element> newComparator() {
+		try {
+			Class<?> clazz = Options.class.getClassLoader().loadClass(
+					"ninja.siden.okite.compiler.internal.ASTComparator");
+			return (Comparator<Element>) clazz.newInstance();
+		} catch (Exception e) {
+			return (l, r) -> 0;
+		}
+	}
+
+	public Comparator<Element> memberComparator() {
+		return memberComparator;
 	}
 }

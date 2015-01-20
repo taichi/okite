@@ -21,15 +21,17 @@ import java.util.stream.Stream;
 import javax.annotation.processing.ProcessingEnvironment;
 
 import ninja.siden.okite.annotation.Cascade;
+import ninja.siden.okite.annotation.Emitter;
+import ninja.siden.okite.annotation.Future;
 import ninja.siden.okite.annotation.Implements;
 import ninja.siden.okite.annotation.MapValidation;
 import ninja.siden.okite.annotation.Max;
 import ninja.siden.okite.annotation.Min;
 import ninja.siden.okite.annotation.NotNull;
+import ninja.siden.okite.annotation.Past;
 import ninja.siden.okite.annotation.Pattern;
 import ninja.siden.okite.annotation.Range;
 import ninja.siden.okite.annotation.Size;
-import ninja.siden.okite.annotation.Emitter;
 import ninja.siden.okite.annotation.Validate;
 import ninja.siden.okite.annotation.Validation;
 
@@ -55,6 +57,7 @@ public class BuiltIns {
 	public Stream<Class<? extends Annotation>> constraint() {
 		// TODO read from options
 		return Stream.of(Cascade.class, Max.class, Min.class, NotNull.class,
-				Pattern.class, Range.class, Size.class, Validate.class);
+				Future.class, Past.class, Pattern.class, Range.class,
+				Size.class, Validate.class);
 	}
 }

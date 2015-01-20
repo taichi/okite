@@ -28,7 +28,7 @@ public abstract class DefaultConstraint<V> implements Constraint<V> {
 
 	int order = 0;
 
-	Policy policy = Policy.StopOnError;
+	Policy policy = Policy.ContinueToNextTarget;
 
 	@Override
 	public String messageId() {
@@ -36,9 +36,8 @@ public abstract class DefaultConstraint<V> implements Constraint<V> {
 	}
 
 	@Override
-	public Constraint<V> messageId(String id) {
+	public void messageId(String id) {
 		this.messageId = Objects.requireNonNull(id);
-		return this;
 	}
 
 	@Override
@@ -47,19 +46,17 @@ public abstract class DefaultConstraint<V> implements Constraint<V> {
 	}
 
 	@Override
-	public Constraint<V> order(int order) {
+	public void order(int order) {
 		this.order = order;
-		return this;
 	}
 
 	@Override
-	public ninja.siden.okite.Constraint.Policy policy() {
+	public Constraint.Policy policy() {
 		return this.policy;
 	}
 
 	@Override
-	public Constraint<V> policy(ninja.siden.okite.Constraint.Policy policy) {
+	public void policy(Constraint.Policy policy) {
 		this.policy = Objects.requireNonNull(policy);
-		return this;
 	}
 }

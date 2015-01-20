@@ -13,11 +13,23 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package ninja.siden.okite.compiler;
+package ninja.siden.okite.compiler.internal;
+
+import javax.annotation.Generated;
+
+import ninja.siden.okite.annotation.AnnotateWith;
+import ninja.siden.okite.annotation.AnnotateWith.AnnotationTarget;
+import ninja.siden.okite.annotation.Validation;
 
 /**
  * @author taichi
  */
-public class ConstraintModel {
+@Validation(prefix = "pref", suffix = "suff", with = {
+		@AnnotateWith(value = Generated.class, target = AnnotationTarget.TYPE, values = "aaa=bbb"),
+		@AnnotateWith(value = Override.class, target = AnnotationTarget.CONSTRUCTOR, values = "ccc=dddd") })
+public @interface MetaValidation {
 
+	boolean cascading() default true;
+
+	AnnotateWith[] with() default {};
 }

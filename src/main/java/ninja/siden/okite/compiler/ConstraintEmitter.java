@@ -17,19 +17,27 @@ package ninja.siden.okite.compiler;
 
 import java.io.PrintWriter;
 
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.AnnotationMirror;
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.VariableElement;
+import javax.lang.model.element.Element;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * @author taichi
  */
 public interface ConstraintEmitter {
 
-	void emit(ProcessingEnvironment env, PrintWriter pw, AnnotationMirror am,
-			VariableElement field);
+	/**
+	 * 
+	 * @param env
+	 * @param roundEnv
+	 * @param pw
+	 * @param am
+	 * @param element
+	 *            field or method
+	 * @param type
+	 * @return true: emit some codes / false: not emitted
+	 */
+	boolean emit(Env env, RoundEnvironment roundEnv, PrintWriter pw,
+			AnnotationMirror am, Element element, TypeMirror type);
 
-	void emit(ProcessingEnvironment env, PrintWriter pw, AnnotationMirror am,
-			ExecutableElement method);
 }

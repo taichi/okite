@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 - 2015 SATO taichi
+ * Copyright 2015 SATO taichi
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,31 +13,37 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package ninja.siden.okite.compiler.internal;
+package ninja.siden.okite.compiler;
 
-import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.ProcessingEnvironment;
-import javax.lang.model.element.AnnotationMirror;
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.VariableElement;
-
-import ninja.siden.okite.compiler.ConstraintEmitter;
+import javax.lang.model.SourceVersion;
 
 /**
  * @author taichi
  */
-public class SizeEmitter implements ConstraintEmitter {
+public abstract class BaseProcessor extends AbstractProcessor {
 
 	@Override
-	public void emit(ProcessingEnvironment env, PrintWriter pw,
-			AnnotationMirror am, VariableElement field) {
-		// TODO not implemented.
+	public SourceVersion getSupportedSourceVersion() {
+		return SourceVersion.latest();
 	}
 
 	@Override
-	public void emit(ProcessingEnvironment env, PrintWriter pw,
-			AnnotationMirror am, ExecutableElement method) {
-		// TODO not implemented.
+	public Set<String> getSupportedAnnotationTypes() {
+		return new HashSet<>(Arrays.asList("*"));
 	}
+
+	protected Env env;
+
+	@Override
+	public synchronized void init(ProcessingEnvironment processingEnv) {
+		super.init(processingEnv);
+		this.env = new Env(processingEnv);
+	}
+
 }

@@ -23,9 +23,9 @@ import java.lang.annotation.Target;
 /**
  * @author taichi
  */
-@Retention(RetentionPolicy.SOURCE)
+@Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.METHOD, ElementType.FIELD })
-@Emitter("ninja.siden.okite.compiler.internal.CascadeEmitter")
+@Emitter("ninja.siden.okite.compiler.emitter.CascadeEmitter")
 public @interface Cascade {
 
 	int order() default 0;

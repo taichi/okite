@@ -17,7 +17,7 @@ package ninja.siden.okite;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.stream.Stream;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -32,7 +32,7 @@ public class OkiteTest {
 	@Before
 	public void setUp() {
 		MessageResolver resolver = new SimpleMessageResolver();
-		target = new Employee$$Validator(resolver);
+		target = new _Employee$$Validator(resolver);
 
 	}
 
@@ -42,6 +42,7 @@ public class OkiteTest {
 		employee.name = "aabb";
 		employee.dept = new Department();
 		employee.dept.id = 7;
+		employee.subProjects = new Project[0];
 		return employee;
 	}
 
@@ -50,8 +51,8 @@ public class OkiteTest {
 		Employee employee = make();
 		employee.id = -1;
 
-		Stream<Violation> errors = target.validate(employee);
-		Violation v = errors.findFirst().get();
+		List<Violation> errors = target.validate(employee);
+		Violation v = errors.get(0);
 		assertEquals("more than 0", v.toMessage());
 	}
 
@@ -60,8 +61,8 @@ public class OkiteTest {
 		Employee employee = make();
 		employee.name = null;
 
-		Stream<Violation> errors = target.validate(employee);
-		Violation v = errors.findFirst().get();
+		List<Violation> errors = target.validate(employee);
+		Violation v = errors.get(0);
 		assertEquals("not to be null", v.toMessage());
 		assertEquals("name", v.target());
 	}
@@ -71,8 +72,8 @@ public class OkiteTest {
 		Employee employee = make();
 		employee.name = "3355";
 
-		Stream<Violation> errors = target.validate(employee);
-		Violation v = errors.findFirst().get();
+		List<Violation> errors = target.validate(employee);
+		Violation v = errors.get(0);
 		assertEquals("must match [a-z]+", v.toMessage());
 		assertEquals("name", v.target());
 	}
@@ -81,9 +82,9 @@ public class OkiteTest {
 	public void test_dept_id_minus() throws Exception {
 		Employee employee = make();
 		employee.dept.id = -1;
-		Stream<Violation> errors = target.validate(employee);
-		Violation v = errors.findFirst().get();
+		List<Violation> errors = target.validate(employee);
+		Violation v = errors.get(0);
 		assertEquals("more than 0", v.toMessage());
-		assertEquals("id", v.target()); // TODO to be dept.id
+		assertEquals("dept.id", v.target());
 	}
 }

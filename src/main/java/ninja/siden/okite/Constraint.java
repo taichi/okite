@@ -15,33 +15,28 @@
  */
 package ninja.siden.okite;
 
-import java.util.stream.Stream;
+import java.util.List;
 
 /**
  * @author taichi
  */
-public interface Constraint<V> extends Comparable<Constraint<V>> {
+public interface Constraint<V> {
 
-	Stream<Violation> validate(V value, ValidationContext context);
+	List<Violation> validate(V value, ValidationContext context);
 
 	String messageId();
 
-	Constraint<V> messageId(String id);
+	void messageId(String id);
 
 	int order();
 
-	Constraint<V> order(int order);
+	void order(int order);
 
 	Policy policy();
 
-	Constraint<V> policy(Policy policy);
-
-	@Override
-	default int compareTo(Constraint<V> o) {
-		return Integer.compare(order(), o.order());
-	}
+	void policy(Policy policy);
 
 	public enum Policy {
-		StopOnError, ContinueOnError, ContinueToNextField;
+		StopOnError, ContinueOnError, ContinueToNextTarget;
 	}
 }

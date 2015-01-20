@@ -16,13 +16,16 @@
 package ninja.siden.okite.internal;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.SortedSet;
-import java.util.function.Function;
+import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import ninja.siden.okite.Constraint;
+import ninja.siden.okite.Constraint.Policy;
+import ninja.siden.okite.MessageResolver;
 import ninja.siden.okite.ValidationContext;
 import ninja.siden.okite.Validator;
 import ninja.siden.okite.Violation;
@@ -32,28 +35,62 @@ import ninja.siden.okite.Violation;
  */
 public abstract class BaseValidator<T> implements Validator<T> {
 
-	protected List<Function<T, Stream<Violation>>> validations = new ArrayList<>();
+	protected MessageResolver resolver;
+	protected List<BiFunction<T, ValidationContext, Progress>> validations = new ArrayList<>();
+
+	protected BaseValidator(MessageResolver resolver) {
+		this.resolver = resolver;
+	}
 
 	@Override
-	public Stream<Violation> validate(T value) {
-		return validations.stream().map(fn -> fn.apply(value))
-				.reduce(Stream.empty(), Stream::concat);
+	public List<Violation> validate(T value) {
+		return validate(value, newContext(""));
 	}
 
-	protected <V> Stream<Violation> validate(V value,
-			SortedSet<Constraint<V>> constraints, ValidationContext context) {
-		return constraints.stream().flatMap(s -> s.validate(value, context));
-	}
-
-	protected Stream<Violation> convert(Violation[] result) {
-		return Stream.of(result);
-	}
-
-	protected Stream<Violation> convert(Collection<Violation> result) {
-		return result.stream();
-	}
-
-	protected Stream<Violation> convert(Stream<Violation> result) {
+	@Override
+	public List<Violation> validate(T value, ValidationContext context) {
+		List<Violation> result = new ArrayList<>();
+		for (BiFunction<T, ValidationContext, Progress> fn : validations) {
+			if (fn.apply(value, context).addTo(result).stopOnError()) {
+				break;
+			}
+		}
 		return result;
 	}
+
+	protected <V> Progress validate(V value,
+			Collection<Constraint<V>> constraints, ValidationContext context) {
+		Progress p = new Progress();
+		for (Constraint<V> cons : constraints) {
+			p.add(cons.validate(value, context));
+			if (p.continueOnError(cons.policy()) == false) {
+				return p.cause(cons.policy());
+			}
+		}
+		return p;
+	}
+
+	protected ValidationContext newContext(ValidationContext parent,
+			String target) {
+		String pT = parent.target();
+		return newContext(pT == null || pT.isEmpty() ? target : pT + "."
+				+ target);
+	}
+
+	protected ValidationContext newContext(String target) {
+		return new DefaultValidationContext(this.resolver, target);
+	}
+
+	protected Progress convert(Policy p, Violation[] result) {
+		return new Progress(p, Arrays.asList(result));
+	}
+
+	protected Progress convert(Policy p, Collection<Violation> result) {
+		return new Progress(p, new ArrayList<>(result));
+	}
+
+	protected Progress convert(Policy p, Stream<Violation> result) {
+		return new Progress(p, result.collect(Collectors.toList()));
+	}
+
 }

@@ -15,22 +15,26 @@
  */
 package ninja.siden.okite.annotation;
 
-import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import ninja.siden.okite.Constants;
+
 /**
  * @author taichi
  */
-@Retention(RetentionPolicy.SOURCE)
+@Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.ANNOTATION_TYPE, ElementType.TYPE })
 public @interface Validation {
 
-	// default validations cf. NotNull
-	Class<? extends Annotation>[] value() default {};
+	String prefix() default Constants.DEFAULT_PREFIX;
 
+	String suffix() default Constants.DEFAULT_SUFFIX;
+
+	// if you want to cascade automatically.
+	// set Constraint annotations other than @Cascade.
 	boolean cascading() default false;
 
 	AnnotateWith[] with() default {};

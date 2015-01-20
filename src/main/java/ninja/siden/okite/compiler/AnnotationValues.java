@@ -15,32 +15,43 @@
  */
 package ninja.siden.okite.compiler;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.SimpleAnnotationValueVisitor8;
 
 /**
  * @author taichi
  */
-public interface AnnotationValues {
+public class AnnotationValues {
 
-	static Stream<? extends AnnotationValue> get(AnnotationMirror am) {
+	final ProcessingEnvironment env;
+
+	public AnnotationValues(ProcessingEnvironment env) {
+		this.env = env;
+	}
+
+	public Stream<? extends AnnotationValue> get(AnnotationMirror am) {
 		return get(am, "value");
 	}
 
-	static Stream<? extends AnnotationValue> get(AnnotationMirror am,
+	public Stream<? extends AnnotationValue> get(AnnotationMirror am,
 			CharSequence key) {
-		return am.getElementValues().entrySet().stream()
+		return env.getElementUtils().getElementValuesWithDefaults(am)
+				.entrySet().stream()
 				.filter(e -> e.getKey().getSimpleName().contentEquals(key))
 				.map(Map.Entry::getValue);
 	}
 
-	static Optional<TypeMirror> readType(AnnotationValue av) {
+	public static Optional<TypeMirror> readType(AnnotationValue av) {
 		TypeMirror value = av.accept(
 				new SimpleAnnotationValueVisitor8<TypeMirror, Void>() {
 					@Override
@@ -51,7 +62,7 @@ public interface AnnotationValues {
 		return Optional.ofNullable(value);
 	}
 
-	static Optional<String> readString(AnnotationValue av) {
+	public static Optional<String> readString(AnnotationValue av) {
 		String value = av.accept(
 				new SimpleAnnotationValueVisitor8<String, Void>() {
 					@Override
@@ -61,4 +72,59 @@ public interface AnnotationValues {
 				}, null);
 		return Optional.ofNullable(value);
 	}
+
+	public static Optional<Integer> readInteger(AnnotationValue av) {
+		Integer value = av.accept(
+				new SimpleAnnotationValueVisitor8<Integer, Void>() {
+					@Override
+					public Integer visitInt(int i, Void p) {
+						return i;
+					}
+				}, null);
+		return Optional.ofNullable(value);
+	}
+
+	public static Optional<Boolean> readBoolean(AnnotationValue av) {
+		Boolean value = av.accept(
+				new SimpleAnnotationValueVisitor8<Boolean, Void>() {
+					@Override
+					public Boolean visitBoolean(boolean b, Void p) {
+						return b;
+					}
+				}, null);
+		return Optional.ofNullable(value);
+	}
+
+	public static Optional<VariableElement> readEnum(AnnotationValue av) {
+		VariableElement value = av.accept(
+				new SimpleAnnotationValueVisitor8<VariableElement, Void>() {
+					@Override
+					public VariableElement visitEnumConstant(VariableElement c,
+							Void p) {
+						return c;
+					}
+				}, null);
+		return Optional.ofNullable(value);
+	}
+
+	public static List<AnnotationMirror> toAnnotations(AnnotationValue value) {
+		return value
+				.accept(new SimpleAnnotationValueVisitor8<List<AnnotationMirror>, List<AnnotationMirror>>() {
+					@Override
+					public List<AnnotationMirror> visitArray(
+							List<? extends AnnotationValue> values,
+							List<AnnotationMirror> p) {
+						values.forEach(av -> av.accept(this, p));
+						return p;
+					}
+
+					@Override
+					public List<AnnotationMirror> visitAnnotation(
+							AnnotationMirror a, List<AnnotationMirror> p) {
+						p.add(a);
+						return p;
+					}
+				}, new ArrayList<>());
+	}
+
 }

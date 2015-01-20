@@ -22,6 +22,8 @@ import java.util.List;
  */
 public interface ValidationContext {
 
+	String target();
+
 	Violation to(String messageId);
 
 	Violation to(String messageId, List<?> args);

@@ -18,6 +18,7 @@ package ninja.siden.okite.internal;
 import java.util.List;
 
 import ninja.siden.okite.MessageResolver;
+import ninja.siden.okite.SimpleMessageResolver;
 import ninja.siden.okite.ValidationContext;
 import ninja.siden.okite.Violation;
 
@@ -29,19 +30,30 @@ public class DefaultValidationContext implements ValidationContext {
 	final MessageResolver resolver;
 	final String target;
 
+	public DefaultValidationContext(String target) {
+		this.resolver = new SimpleMessageResolver();
+		this.target = target;
+	}
+
 	public DefaultValidationContext(MessageResolver resolver, String target) {
 		this.resolver = resolver;
 		this.target = target;
 	}
 
 	@Override
+	public String target() {
+		return this.target;
+	}
+
+	@Override
 	public Violation to(String messageId) {
-		return new DefaultViolation(this.resolver, this.target, messageId);
+		return new DefaultViolation(this.resolver, this.target(), messageId);
 	}
 
 	@Override
 	public Violation to(String messageId, List<?> args) {
-		return new DefaultViolation(this.resolver, this.target, messageId, args);
+		return new DefaultViolation(this.resolver, this.target(), messageId,
+				args);
 	}
 
 }

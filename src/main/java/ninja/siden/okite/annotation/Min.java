@@ -16,26 +16,34 @@
 package ninja.siden.okite.annotation;
 
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import ninja.siden.okite.Constraint.Policy;
-import ninja.siden.okite.constraint.MinConstraint;
 
 /**
  * @author taichi
  */
+@Repeatable(Min.List.class)
 @Retention(RetentionPolicy.SOURCE)
 @Target({ ElementType.FIELD, ElementType.METHOD })
-@Implements(MinConstraint.class)
+@Emitter("ninja.siden.okite.compiler.emitter.MinEmitter")
 public @interface Min {
 
 	long value() default 0L;
+
+	boolean inclusive() default true;
 
 	String messageId() default "okite.min";
 
 	int order() default 0;
 
-	Policy policy() default Policy.ContinueToNextField;
+	Policy policy() default Policy.ContinueToNextTarget;
+
+	@Target({ ElementType.FIELD, ElementType.METHOD })
+	public @interface List {
+		Min[] value();
+	}
 }

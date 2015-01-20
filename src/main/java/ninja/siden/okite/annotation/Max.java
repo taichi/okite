@@ -16,26 +16,34 @@
 package ninja.siden.okite.annotation;
 
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import ninja.siden.okite.Constraint.Policy;
-import ninja.siden.okite.constraint.MaxConstraint;
 
 /**
  * @author taichi
  */
+@Repeatable(Max.List.class)
 @Retention(RetentionPolicy.SOURCE)
 @Target({ ElementType.FIELD, ElementType.METHOD })
-@Implements(MaxConstraint.class)
+@Emitter("ninja.siden.okite.compiler.emitter.MaxEmitter")
 public @interface Max {
 
-	long value() default 0L;
+	long value() default Long.MAX_VALUE;
+
+	boolean inclusive() default true;
 
 	String messageId() default "okite.max";
 
 	int order() default 0;
 
-	Policy policy() default Policy.ContinueToNextField;
+	Policy policy() default Policy.ContinueToNextTarget;
+
+	@Target({ ElementType.FIELD, ElementType.METHOD })
+	public @interface List {
+		Max[] value();
+	}
 }
